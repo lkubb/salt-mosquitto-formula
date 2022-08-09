@@ -1,0 +1,28 @@
+{%- macro render(key, val) %}
+{%-   if val in [true, false] %}
+{{ key }} {{ val | lower }}
+{%-   elif val | is_list %}
+{%-     for item in val %}
+{{- render(key, item) }}
+{%-     endfor %}
+{%-   else %}
+{{ key }} {{ val }}
+{%-   endif %}
+{%- endmacro %}
+
+{%- for var, val in mosquitto.config.items() %}
+{%-   if val is none or var.startswith("listener") %}
+{%-     continue %}
+{%-   endif %}
+{{- render(var, val) }}
+{%- endfor %}
+
+{% for var, val in mosquitto.config.items() %}
+{%-   if val is none or not var.startswith("listener") %}
+{%-     continue %}
+{%-   endif %}
+{{ var }}
+{%-   for k, v in val.items() %}
+{{- render(k, v) }}
+{%-   endfor %}
+{%- endfor %}

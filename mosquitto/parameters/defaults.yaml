@@ -1,0 +1,56 @@
+# -*- coding: utf-8 -*-
+# vim: ft=yaml
+#
+# Set default values.
+---
+values:
+  lookup:
+    rootgroup: root
+    compose:
+      create_pod: null
+      pod_args: null
+      project_name: mosquitto
+      remove_orphans: true
+      service:
+        container_prefix: null
+        ephemeral: true
+        pod_prefix: null
+        restart_policy: on-failure
+        restart_sec: 2
+        separator: null
+        stop_timeout: null
+    paths:
+      base: /opt/containers/mosquitto
+      compose: docker-compose.yml
+      config_mosquitto: mosquitto.env
+      config: config
+      data: data
+      log: log
+    user:
+      groups: []
+      home: null
+      name: mosquitto
+      shell: /usr/sbin/nologin
+      uid: null
+      gid: null
+    containers:
+      mosquitto:
+        image: docker.io/library/eclipse-mosquitto
+  install:
+    rootless: true
+    remove_all_data_for_sure: false
+  config:
+    protocol: mqtt
+    log_dest: stdout
+    log_type:
+      - error
+      - warning
+      - notice
+      - information
+    persistence: true
+    listener 1883:
+      protocol: mqtt
+  # Just here for testing
+  added_in_defaults: defaults_value
+  winner: defaults
+...

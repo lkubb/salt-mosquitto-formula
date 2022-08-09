@@ -1,0 +1,29 @@
+{%- set ports = [] %}
+{%- for conf in mosquitto.config %}
+{%-   if not conf.startswith("listener") %}
+{%-     continue %}
+{%-   endif %}
+{%-   set port = conf.split(" ")[1] %}
+{%-   if port | int > 0 %}
+{%-     do ports.append(port) %}
+{%-   endif %}
+{%- endfor -%}
+---
+version: '3'
+services:
+  mosquitto:
+    container_name: mosquitto
+    image: {{ mosquitto.lookup.containers.mosquitto.image }}
+    env_file:
+      - {{ mosquitto.lookup.paths.config_mosquitto }}
+    volumes:
+      - {{ mosquitto.lookup.paths.config }}:/mosquitto/config
+      - {{ mosquitto.lookup.paths.data }}:/mosquitto/data
+      - {{ mosquitto.lookup.paths.log }}:/mosquitto/log
+{%- if ports %}
+    ports:
+{%-   for port in ports %}
+      - {{ port }}:{{ port }}
+{%-   endfor %}
+{%- endif %}
+    restart: unless-stopped
