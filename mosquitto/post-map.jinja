@@ -15,3 +15,30 @@
 {%- if not mapdata.lookup.user.home %}
   {%- do mapdata.lookup.user.update({"home": base_path}) %}
 {%- endif %}
+
+
+{#-
+    Convenience: update with configuration defaults depending on
+    chosen variant.
+-#}
+
+{%- set container_vars = salt["match.filter_by"](mapdata.lookup.container_variants, minion_id=mapdata.container_variant, default="mosquitto_official") %}
+{%- set default_config = salt["defaults.deepcopy"](container_vars.default_config) %}
+{%- do salt["defaults.merge"](default_config, mapdata.config) %}
+{%- do mapdata.update({"config": default_config}) %}
+
+
+{#-
+    If pods are in use, make sure the user ID stays the same.
+    This is much more convenient because the process runs as UID 1883
+    inside the container and potentially needs access to sensitive files
+    (certificates).
+-#}
+
+{%- if mapdata.install.rootless %}
+  {%- if mapdata.lookup.compose.create_pod is not false %}
+    {%- do mapdata | append_dict_key_value("lookup:compose:pod_args", {"userns": "keep-id"}) %}
+  {%- else %}
+    {%- do mapdata | append_dict_key_value("lookup:compose:podman_create_args", {"userns": "keep-id"}) %}
+  {%- endif %}
+{%- endif %}

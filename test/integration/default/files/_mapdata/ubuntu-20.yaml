@@ -33,25 +33,80 @@ values:
       home: null
       name: mosquitto
       shell: /usr/sbin/nologin
-      uid: null
+      uid: 1883
       gid: null
-    containers:
-      mosquitto:
+    container_variants:
+      mosquitto_go_auth:
+        config: /etc/mosquitto
+        data: /var/lib/mosquitto
+        default_config:
+          auth_opt_auth_cache_seconds: 30
+          auth_opt_auth_jitter_seconds: 3
+          auth_opt_backends: files, sqlite
+          auth_opt_cache: true
+          auth_opt_cache_reset: true
+          auth_opt_cache_type: go-cache
+          auth_opt_disable_superuser: true
+          auth_opt_files_acl_path: /etc/mosquitto/acl
+          auth_opt_files_register: acl
+          auth_opt_hasher: pbkdf2
+          auth_opt_hasher_algorithm: sha512
+          auth_opt_hasher_iterations: 100000
+          auth_opt_hasher_keylen: 64
+          auth_opt_hasher_salt_encoding: base64
+          auth_opt_hasher_salt_size: 16
+          auth_opt_log_dest: file
+          auth_opt_log_file: /var/log/mosquitto/mosquitto.log
+          auth_opt_log_level: info
+          auth_opt_sqlite_register: user
+          auth_opt_sqlite_source: /etc/mosquitto/auth.db
+          auth_opt_sqlite_userquery: SELECT password_hash FROM users WHERE username =
+            ? limit 1
+          auth_plugin: /mosquitto/go-auth.so
+          listener 1883:
+            protocol: mqtt
+          log_dest: file /var/log/mosquitto/mosquitto.log
+          log_type:
+            - error
+            - warning
+            - notice
+            - information
+          persistence: true
+          persistence_location: /var/lib/mosquitto
+          persistent_client_expiration: 30d
+        image: docker.io/iegomez/mosquitto-go-auth
+        log: /var/log/mosquitto
+      mosquitto_official:
+        config: /mosquitto/config
+        data: /mosquitto/data
+        default_config:
+          acl_file: /mosquitto/config/acl
+          listener 1883:
+            protocol: mqtt
+          log_dest: file /mosquitto/log/mosquitto.log
+          log_type:
+            - error
+            - warning
+            - notice
+            - information
+          password_file: /mosquitto/config/passwd
+          persistence: true
+          persistence_location: /mosquitto/data
+          persistent_client_expiration: 30d
         image: docker.io/library/eclipse-mosquitto
+        log: /mosquitto/log
   install:
     rootless: true
     remove_all_data_for_sure: false
-  config:
-    listener 1883:
-      protocol: mqtt
-    log_dest: stdout
-    log_type:
-      - error
-      - warning
-      - notice
-      - information
-    persistence: true
-    protocol: mqtt
+  container_variant: mosquitto_official
+  acl:
+    anonymous: {}
+    pattern: {}
+    user: {}
+  config: {}
+  users:
+    absent: []
+    present: {}
   map_jinja:
     sources:
     - Y:G@osarch

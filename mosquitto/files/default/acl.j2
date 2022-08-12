@@ -1,0 +1,34 @@
+{%- macro render(type, perm, topic) %}
+{%-   if type in ["topic", "pattern"] and
+         perm in ["deny", "read", "write", "readwrite", ""] %}
+{{ type }} {{ perm }} {{ topic }}
+{%-   endif %}
+{%- endmacro -%}
+
+# This file is managed by Salt.
+# Manual changes might be overwritten.
+
+## Anonymous permissions
+{%- for perm, topics in mosquitto.acl.anonymous | dictsort %}
+{%-   for topic in topics %}
+{{- render("topic", perm, topic) }}
+{%-   endfor %}
+{%- endfor %}
+
+## User permissions
+{%- for user, perms in mosquitto.acl.user | dictsort %}
+
+user {{ user }}
+{%-   for perm, topics in perms | dictsort %}
+{%-     for topic in topics %}
+{{- render("topic", perm, topic) }}
+{%-     endfor %}
+{%-   endfor %}
+{%- endfor %}
+
+## Pattern matching
+{%- for perm, patterns in mosquitto.acl.pattern | dictsort %}
+{%-   for pattern in patterns %}
+{{- render("pattern", perm, pattern) }}
+{%-   endfor %}
+{%- endfor %}

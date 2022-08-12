@@ -3,5 +3,6 @@
 
 include:
   - .service.clean
+  - .auth.clean
   - .config.clean
   - .package.clean

@@ -11,7 +11,14 @@
 {%- endmacro %}
 
 {%- for var, val in mosquitto.config.items() %}
-{%-   if val is none or var.startswith("listener") %}
+{%-   if val is none or var.startswith("listener") or var.startswith("auth_opt") %}
+{%-     continue %}
+{%-   endif %}
+{{- render(var, val) }}
+{%- endfor %}
+
+{% for var, val in mosquitto.config.items() %}
+{%-   if val is none or not var.startswith("auth_opt") %}
 {%-     continue %}
 {%-   endif %}
 {{- render(var, val) }}

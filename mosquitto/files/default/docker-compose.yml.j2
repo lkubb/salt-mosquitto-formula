@@ -3,27 +3,28 @@
 {%-   if not conf.startswith("listener") %}
 {%-     continue %}
 {%-   endif %}
-{%-   set port = conf.split(" ")[1] %}
-{%-   if port | int > 0 %}
-{%-     do ports.append(port) %}
+{%-   set parts = conf.split(" ") %}
+{%-   if parts[1] | int > 0 %}
+{%-     do ports.append(parts[1:]) %}
 {%-   endif %}
 {%- endfor -%}
+{%- set container_vars = salt["match.filter_by"](mosquitto.lookup.container_variants, minion_id=mosquitto.container_variant, default="mosquitto_official") %}
 ---
 version: '3'
 services:
   mosquitto:
     container_name: mosquitto
-    image: {{ mosquitto.lookup.containers.mosquitto.image }}
+    image: {{ container_vars.image }}
     env_file:
       - {{ mosquitto.lookup.paths.config_mosquitto }}
     volumes:
-      - {{ mosquitto.lookup.paths.config }}:/mosquitto/config
-      - {{ mosquitto.lookup.paths.data }}:/mosquitto/data
-      - {{ mosquitto.lookup.paths.log }}:/mosquitto/log
+      - {{ mosquitto.lookup.paths.config }}:{{ container_vars.config }}
+      - {{ mosquitto.lookup.paths.data }}:{{ container_vars.data }}
+      - {{ mosquitto.lookup.paths.log }}:{{ container_vars.log }}
 {%- if ports %}
     ports:
 {%-   for port in ports %}
-      - {{ port }}:{{ port }}
+      - {{ ("127.0.0.1:" if port | length > 1 and port[1] in ["localhost", "127.0.0.1"] else "") ~ port[0] }}:{{ port[0] }}
 {%-   endfor %}
 {%- endif %}
     restart: unless-stopped

@@ -5,6 +5,15 @@
 {%- from tplroot ~ "/map.jinja" import mapdata as mosquitto with context %}
 {%- from tplroot ~ "/libtofs.jinja" import files_switch with context %}
 
+{%- set extmod_list = salt["saltutil.list_extmods"]() %}
+
+Custom Eclipse Mosquitto modules are synced:
+  saltutil.sync_all:
+    - refresh: true
+    - unless:
+      - {{ "compose" in extmod_list.get("states") }}
+      - {{ "mosquitto" in extmod_list.get("states") }}
+
 Eclipse Mosquitto user account is present:
   user.present:
 {%- for param, val in mosquitto.lookup.user.items() %}

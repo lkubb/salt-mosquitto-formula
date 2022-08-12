@@ -2,7 +2,5 @@
 # vim: ft=sls
 
 include:
-  - .package
-  - .config
-  - .auth
-  - .service
+  - .users
+  - .acl
