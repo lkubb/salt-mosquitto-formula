@@ -1,0 +1,36 @@
+{#- -*- coding: utf-8 -*- #}
+{#- vim: ft=jinja #}
+
+{#- Allows to setup authentication and authorization for Meross devices automatically.
+    The setup is otherwise quite intricate:
+    * The device's clientid is formatted like "fmware:<dev_uuid>_<?>" and thus does not lend
+      itself to pattern matching.
+    * The device authenticates with its MAC address as the username. This forbids using the
+      default Mosquitto file-based authentication since it does not support colons in usernames.
+      The device is also setup with a key that is not directly used as a password.
+      It is prepended with the MAC address as a salt, hashed with MD5 and the resulting
+      hexdigest is then prepended with a numeric user ID, separated by an underscore.
+      TLDR: username = mac, password = <uid>_md5(<mac><key>)
+    Reference: https://albertogeniola.github.io/MerossIot/meross-protocol.html
+
+    Expects a list of devices in "plugin:meross", a device being of the following structure:
+    {
+      key: <key used during device setup>
+      key_pillar: <pillar value where to look up the above key instead>
+      mac: <device_mac_address>
+      userid: <numeric userid used during device setup, defaults to 0>
+      uuid: <device_uuid>
+      user_opts: {}  # those are passed to this formula's user dict and e.g. allow to setup hashing opts
+    }
+-#}
+
+{%- for dev in mapdata.plugin.meross %}
+  {%- do mapdata.acl.user | append_dict_key_value(dev.mac ~ "!read", "/appliance/{}/subscribe".format(dev.uuid), delimiter="!") %}
+  {%- do mapdata.acl.user | append_dict_key_value(dev.mac ~ "!write", "/appliance/{}/publish".format(dev.uuid), delimiter="!") %}
+  {%- set key = dev.key or salt["pillar.get"](dev.key_pillar) %}
+  {%- set key_hash = salt["random.hash"](dev.mac ~ key, algorithm="md5") %}
+  {%- set pw = "{}_{}".format(dev.get("userid", 0), key_hash) %}
+  {%- set user_opts = dev.get("user_opts", {}) %}
+  {%- do user_opts.update({"password": pw}) %}
+  {%- do mapdata.users.present.update({dev.mac: user_opts}) %}
+{%- endfor %}

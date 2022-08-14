@@ -42,3 +42,10 @@
     {%- do mapdata | append_dict_key_value("lookup:compose:podman_create_args", {"userns": "keep-id"}) %}
   {%- endif %}
 {%- endif %}
+
+
+{#- Allow some basic plugins to modify mapdata further. -#}
+
+{%- for plugin in mapdata.plugin %}
+  {%- include tplroot ~ "/formula_plugin/{}.jinja".format(plugin) %}
+{%- endfor %}

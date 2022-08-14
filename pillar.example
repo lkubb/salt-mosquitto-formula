@@ -47,6 +47,20 @@ mosquitto:
     # Default configuration will be merged, depending on chosen container type.
     # Unset default values by setting them to null.
   config: {}
+    # This formula configuration can be extended by plugins that
+    # are intended to provide some convenience functions for configuration.
+    # You can extend this formula by writing a formula_plugin/<plugin_name>.jinja
+    # and including the <plugin_name> in the following dict.
+  plugin:
+      # Helper for setting up Meross device accounts and ACL lists.
+    meross: []
+      # Example:
+      # - key: <key used during device setup>
+      #   key_pillar: <pillar value where to look up the above key instead>
+      #   mac: <device_mac_address>
+      #   userid: <numeric userid used during device setup, defaults to 0>
+      #   uuid: <device_uuid>
+      #   user_opts: {}  # opts for users.present below
     # Manage user accounts
   users:
       # List of usernames that should be absent

@@ -11,8 +11,8 @@ Custom Eclipse Mosquitto modules are synced:
   saltutil.sync_all:
     - refresh: true
     - unless:
-      - {{ "compose" in extmod_list.get("states") }}
-      - {{ "mosquitto" in extmod_list.get("states") }}
+      - {{ "compose" in extmod_list.get("states", []) }}
+      - {{ "mosquitto" in extmod_list.get("states", []) }}
 
 Eclipse Mosquitto user account is present:
   user.present:

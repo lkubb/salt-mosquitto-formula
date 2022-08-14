@@ -103,6 +103,8 @@ mosquitto:
     pattern: {}
     user: {}
   config: {}
+  plugin:
+    meross: []
   users:
     absent: []
     present: {}
