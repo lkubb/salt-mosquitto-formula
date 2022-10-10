@@ -8,6 +8,18 @@
 include:
   - {{ sls_config_clean }}
 
+{%- if mosquitto.install.autoupdate_service %}
+
+Podman autoupdate service is disabled for Eclipse Mosquitto:
+{%-   if mosquitto.install.rootless %}
+  compose.systemd_service_disabled:
+    - user: {{ mosquitto.lookup.user.name }}
+{%-   else %}
+  service.disabled:
+{%-   endif %}
+    - name: podman-auto-update.timer
+{%- endif %}
+
 Eclipse Mosquitto is absent:
   compose.removed:
     - name: {{ mosquitto.lookup.paths.compose }}

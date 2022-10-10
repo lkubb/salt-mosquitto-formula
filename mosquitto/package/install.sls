@@ -80,3 +80,15 @@ Eclipse Mosquitto is installed:
     - require:
       - user: {{ mosquitto.lookup.user.name }}
 {%- endif %}
+
+{%- if mosquitto.install.autoupdate_service is not none %}
+
+Podman autoupdate service is managed for Eclipse Mosquitto:
+{%-   if mosquitto.install.rootless %}
+  compose.systemd_service_{{ "enabled" if mosquitto.install.autoupdate_service else "disabled" }}:
+    - user: {{ mosquitto.lookup.user.name }}
+{%-   else %}
+  service.{{ "enabled" if mosquitto.install.autoupdate_service else "disabled" }}:
+{%-   endif %}
+    - name: podman-auto-update.timer
+{%- endif %}

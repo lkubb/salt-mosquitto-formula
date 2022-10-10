@@ -17,6 +17,10 @@ services:
     image: {{ container_vars.image }}
     env_file:
       - {{ mosquitto.lookup.paths.config_mosquitto }}
+{%- if mosquitto.install.autoupdate %}
+    labels:
+      - io.containers.autoupdate=registry
+{%- endif %}
     volumes:
       - {{ mosquitto.lookup.paths.config }}:{{ container_vars.config }}
       - {{ mosquitto.lookup.paths.data }}:{{ container_vars.data }}

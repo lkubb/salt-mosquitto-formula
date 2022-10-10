@@ -99,6 +99,8 @@ mosquitto:
         log: /mosquitto/log
   install:
     rootless: true
+    autoupdate: true
+    autoupdate_service: false
     remove_all_data_for_sure: false
   container_variant: mosquitto_official
   acl:
