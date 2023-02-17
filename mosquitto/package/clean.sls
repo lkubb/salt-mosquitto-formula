@@ -1,8 +1,14 @@
-# -*- coding: utf-8 -*-
 # vim: ft=sls
 
-{%- set tplroot = tpldir.split('/')[0] %}
-{%- set sls_config_clean = tplroot ~ '.config.clean' %}
+{#-
+    Removes the mosquitto containers
+    and the corresponding user account and service units.
+    Has a depency on `mosquitto.config.clean`_.
+    If ``remove_all_data_for_sure`` was set, also removes all data.
+#}
+
+{%- set tplroot = tpldir.split("/")[0] %}
+{%- set sls_config_clean = tplroot ~ ".config.clean" %}
 {%- from tplroot ~ "/map.jinja" import mapdata as mosquitto with context %}
 
 include:
@@ -40,6 +46,25 @@ Eclipse Mosquitto compose file is absent:
     - name: {{ mosquitto.lookup.paths.compose }}
     - require:
       - Eclipse Mosquitto is absent
+
+{%- if mosquitto.install.podman_api %}
+
+Eclipse Mosquitto podman API is unavailable:
+  compose.systemd_service_dead:
+    - name: podman
+    - user: {{ mosquitto.lookup.user.name }}
+    - onlyif:
+      - fun: user.info
+        name: {{ mosquitto.lookup.user.name }}
+
+Eclipse Mosquitto podman API is disabled:
+  compose.systemd_service_disabled:
+    - name: podman
+    - user: {{ mosquitto.lookup.user.name }}
+    - onlyif:
+      - fun: user.info
+        name: {{ mosquitto.lookup.user.name }}
+{%- endif %}
 
 Eclipse Mosquitto user session is not initialized at boot:
   compose.lingering_managed:

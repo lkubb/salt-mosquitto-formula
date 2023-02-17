@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 # vim: ft=sls
 
-{%- set tplroot = tpldir.split('/')[0] %}
+{%- set tplroot = tpldir.split("/")[0] %}
 {%- from tplroot ~ "/map.jinja" import mapdata as mosquitto with context %}
 {%- from tplroot ~ "/libtofs.jinja" import files_switch with context %}
 
@@ -44,11 +43,28 @@ Eclipse Mosquitto paths are present:
     - require:
       - user: {{ mosquitto.lookup.user.name }}
 
+{%- if mosquitto.install.podman_api %}
+
+Eclipse Mosquitto podman API is enabled:
+  compose.systemd_service_enabled:
+    - name: podman
+    - user: {{ mosquitto.lookup.user.name }}
+    - require:
+      - Eclipse Mosquitto user session is initialized at boot
+
+Eclipse Mosquitto podman API is available:
+  compose.systemd_service_running:
+    - name: podman
+    - user: {{ mosquitto.lookup.user.name }}
+    - require:
+      - Eclipse Mosquitto user session is initialized at boot
+{%- endif %}
+
 Eclipse Mosquitto compose file is managed:
   file.managed:
     - name: {{ mosquitto.lookup.paths.compose }}
-    - source: {{ files_switch(['docker-compose.yml', 'docker-compose.yml.j2'],
-                              lookup='Eclipse Mosquitto compose file is present'
+    - source: {{ files_switch(["docker-compose.yml", "docker-compose.yml.j2"],
+                              lookup="Eclipse Mosquitto compose file is present"
                  )
               }}
     - mode: '0644'

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # vim: ft=yaml
 ---
 mosquitto:
@@ -102,6 +101,7 @@ mosquitto:
     autoupdate: true
     autoupdate_service: false
     remove_all_data_for_sure: false
+    podman_api: true
   container_variant: mosquitto_official
   acl:
     anonymous: {}
