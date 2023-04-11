@@ -51,7 +51,7 @@ Eclipse Mosquitto compose file is absent:
 
 Eclipse Mosquitto podman API is unavailable:
   compose.systemd_service_dead:
-    - name: podman
+    - name: podman.socket
     - user: {{ mosquitto.lookup.user.name }}
     - onlyif:
       - fun: user.info
@@ -59,7 +59,7 @@ Eclipse Mosquitto podman API is unavailable:
 
 Eclipse Mosquitto podman API is disabled:
   compose.systemd_service_disabled:
-    - name: podman
+    - name: podman.socket
     - user: {{ mosquitto.lookup.user.name }}
     - onlyif:
       - fun: user.info

@@ -47,14 +47,14 @@ Eclipse Mosquitto paths are present:
 
 Eclipse Mosquitto podman API is enabled:
   compose.systemd_service_enabled:
-    - name: podman
+    - name: podman.socket
     - user: {{ mosquitto.lookup.user.name }}
     - require:
       - Eclipse Mosquitto user session is initialized at boot
 
 Eclipse Mosquitto podman API is available:
   compose.systemd_service_running:
-    - name: podman
+    - name: podman.socket
     - user: {{ mosquitto.lookup.user.name }}
     - require:
       - Eclipse Mosquitto user session is initialized at boot
