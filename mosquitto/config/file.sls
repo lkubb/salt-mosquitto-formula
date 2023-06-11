@@ -1,9 +1,9 @@
 # vim: ft=sls
 
-{%- set tplroot = tpldir.split('/')[0] %}
-{%- set sls_package_install = tplroot ~ '.package.install' %}
+{%- set tplroot = tpldir.split("/")[0] %}
+{%- set sls_package_install = tplroot ~ ".package.install" %}
 {%- from tplroot ~ "/map.jinja" import mapdata as mosquitto with context %}
-{%- from tplroot ~ "/libtofs.jinja" import files_switch with context %}
+{%- from tplroot ~ "/libtofsstack.jinja" import files_switch with context %}
 
 include:
   - {{ sls_package_install }}
@@ -12,15 +12,17 @@ Eclipse Mosquitto environment files are managed:
   file.managed:
     - names:
       - {{ mosquitto.lookup.paths.config_mosquitto }}:
-        - source: {{ files_switch(['mosquitto.env', 'mosquitto.env.j2'],
-                                  lookup='mosquitto environment file is managed',
-                                  indent_width=10,
+        - source: {{ files_switch(
+                        ["mosquitto.env", "mosquitto.env.j2"],
+                        config=mosquitto,
+                        lookup="mosquitto environment file is managed",
+                        indent_width=10,
                      )
                   }}
     - mode: '0640'
     - user: root
     - group: {{ mosquitto.lookup.user.name }}
-    - makedirs: True
+    - makedirs: true
     - template: jinja
     - require:
       - user: {{ mosquitto.lookup.user.name }}
@@ -32,8 +34,10 @@ Eclipse Mosquitto environment files are managed:
 Eclipse Mosquitto configuration is managed:
   file.managed:
     - name: {{ mosquitto.lookup.paths.config | path_join("mosquitto.conf") }}
-    - source: {{ files_switch(["mosquitto.conf", "mosquitto.conf.j2"],
-                              lookup='Eclipse Mosquitto configuration is managed',
+    - source: {{ files_switch(
+                    ["mosquitto.conf", "mosquitto.conf.j2"],
+                    config=mosquitto,
+                    lookup='Eclipse Mosquitto configuration is managed',
                  )
               }}
     - template: jinja

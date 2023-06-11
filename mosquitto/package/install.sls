@@ -2,7 +2,7 @@
 
 {%- set tplroot = tpldir.split("/")[0] %}
 {%- from tplroot ~ "/map.jinja" import mapdata as mosquitto with context %}
-{%- from tplroot ~ "/libtofs.jinja" import files_switch with context %}
+{%- from tplroot ~ "/libtofsstack.jinja" import files_switch with context %}
 
 {%- set extmod_list = salt["saltutil.list_extmods"]() %}
 
@@ -63,14 +63,16 @@ Eclipse Mosquitto podman API is available:
 Eclipse Mosquitto compose file is managed:
   file.managed:
     - name: {{ mosquitto.lookup.paths.compose }}
-    - source: {{ files_switch(["docker-compose.yml", "docker-compose.yml.j2"],
-                              lookup="Eclipse Mosquitto compose file is present"
+    - source: {{ files_switch(
+                    ["docker-compose.yml", "docker-compose.yml.j2"],
+                    config=mosquitto,
+                    lookup="Eclipse Mosquitto compose file is present",
                  )
               }}
     - mode: '0644'
     - user: root
     - group: {{ mosquitto.lookup.rootgroup }}
-    - makedirs: True
+    - makedirs: true
     - template: jinja
     - makedirs: true
     - context:

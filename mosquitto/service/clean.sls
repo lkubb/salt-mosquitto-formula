@@ -1,6 +1,5 @@
 # vim: ft=sls
 
-
 {#-
     Stops the mosquitto container services
     and disables them at boot time.

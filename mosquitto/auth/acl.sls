@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
 # vim: ft=sls
 
-{%- set tplroot = tpldir.split('/')[0] %}
-{%- set sls_config_file = tplroot ~ '.config.file' %}
+{%- set tplroot = tpldir.split("/")[0] %}
+{%- set sls_config_file = tplroot ~ ".config.file" %}
 {%- from tplroot ~ "/map.jinja" import mapdata as mosquitto with context %}
-{%- from tplroot ~ "/libtofs.jinja" import files_switch with context %}
+{%- from tplroot ~ "/libtofsstack.jinja" import files_switch with context %}
 
 include:
   - {{ sls_config_file }}
@@ -13,8 +12,10 @@ include:
 Eclipse Mosquitto ACL file is managed:
   file.managed:
     - name: {{ mosquitto.lookup.paths.config | path_join("acl") }}
-    - source: {{ files_switch(["acl", "acl.j2"],
-                              lookup='Eclipse Mosquitto ACL file is managed',
+    - source: {{ files_switch(
+                    ["acl", "acl.j2"],
+                    config=mosquitto,
+                    lookup="Eclipse Mosquitto ACL file is managed",
                  )
               }}
     - template: jinja

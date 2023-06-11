@@ -27,13 +27,6 @@ Manages the configuration of the mosquitto containers.
 Has a dependency on `mosquitto.package`_.
 
 
-``mosquitto.service``
-^^^^^^^^^^^^^^^^^^^^^
-Starts the mosquitto container services
-and enables them at boot time.
-Has a dependency on `mosquitto.config`_.
-
-
 ``mosquitto.auth``
 ^^^^^^^^^^^^^^^^^^
 
@@ -47,6 +40,13 @@ Has a dependency on `mosquitto.config`_.
 ``mosquitto.auth.users``
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
+
+
+``mosquitto.service``
+^^^^^^^^^^^^^^^^^^^^^
+Starts the mosquitto container services
+and enables them at boot time.
+Has a dependency on `mosquitto.config`_.
 
 
 ``mosquitto.clean``
@@ -75,14 +75,14 @@ This does not lead to the containers/services being rebuilt
 and thus differs from the usual behavior.
 
 
+``mosquitto.auth.clean``
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+
+
 ``mosquitto.service.clean``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Stops the mosquitto container services
 and disables them at boot time.
-
-
-``mosquitto.auth.clean``
-^^^^^^^^^^^^^^^^^^^^^^^^
-
 
 
