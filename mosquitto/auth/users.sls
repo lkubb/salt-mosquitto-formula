@@ -21,6 +21,8 @@ Mosquitto go auth users table exists:
       - is_admin integer not null
     - require:
       - sls: {{ sls_config_file }}
+    - require_in:
+      - file: {{ pw_file }}
 {%- else %}
 {%-   set pw_file = mosquitto.lookup.paths.config | path_join("passwd") %}
 {%- endif %}
@@ -49,7 +51,7 @@ Wanted Mosquitto users are present:
     - pw_file: {{ pw_file }}
     - goauth: {{ "mosquitto_go_auth" == mosquitto.container_variant }}
     - require:
-      - Mosquitto password file exists with correct permissions
+      - file: {{ pw_file }}
     - watch_in:
       - Eclipse Mosquitto is installed
 {%- endif %}
@@ -62,7 +64,7 @@ Unwanted Mosquitto users are absent:
     - pw_file: {{ pw_file }}
     - goauth: {{ "mosquitto_go_auth" == mosquitto.container_variant }}
     - require:
-      - Mosquitto password file exists with correct permissions
+      - file: {{ pw_file }}
     - watch_in:
       - Eclipse Mosquitto is installed
 {%- endif %}
