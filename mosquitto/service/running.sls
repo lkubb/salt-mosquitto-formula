@@ -34,3 +34,4 @@ Eclipse Mosquitto service is running:
 {%- endif %}
     - watch:
       - Eclipse Mosquitto is installed
+      - sls: {{ sls_config_file }}

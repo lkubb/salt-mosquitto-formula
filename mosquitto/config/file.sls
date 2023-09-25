@@ -26,7 +26,7 @@ Eclipse Mosquitto environment files are managed:
     - template: jinja
     - require:
       - user: {{ mosquitto.lookup.user.name }}
-    - watch_in:
+    - require_in:
       - Eclipse Mosquitto is installed
     - context:
         mosquitto: {{ mosquitto | json }}
@@ -48,7 +48,5 @@ Eclipse Mosquitto configuration is managed:
     - group: {{ mosquitto.lookup.user.name }}
     - require:
       - user: {{ mosquitto.lookup.user.name }}
-    - watch_in:
-      - Eclipse Mosquitto is installed
     - context:
         mosquitto: {{ mosquitto | json }}
