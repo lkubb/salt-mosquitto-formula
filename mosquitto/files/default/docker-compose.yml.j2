@@ -22,9 +22,9 @@ services:
       - io.containers.autoupdate=registry
 {%- endif %}
     volumes:
-      - {{ mosquitto.lookup.paths.config }}:{{ container_vars.config }}
-      - {{ mosquitto.lookup.paths.data }}:{{ container_vars.data }}
-      - {{ mosquitto.lookup.paths.log }}:{{ container_vars.log }}
+      - {{ mosquitto.lookup.paths.config }}:{{ container_vars.config }}:Z
+      - {{ mosquitto.lookup.paths.data }}:{{ container_vars.data }}:Z
+      - {{ mosquitto.lookup.paths.log }}:{{ container_vars.log }}:Z
 {%- if ports %}
     ports:
 {%-   for port in ports %}
