@@ -36,9 +36,11 @@
 
 {%- if mapdata.install.rootless %}
   {%- if mapdata.lookup.compose.create_pod is not false %}
-    {%- do mapdata | append_dict_key_value("lookup:compose:pod_args", {"userns": "keep-id"}) %}
+    {%- do mapdata | append_dict_key_value("lookup:compose:pod_args", {
+          "userns": "keep-id:uid={uid},gid={gid}".format(uid=container_vars.uid, gid=container_vars.gid)}) %}
   {%- else %}
-    {%- do mapdata | append_dict_key_value("lookup:compose:podman_create_args", {"userns": "keep-id"}) %}
+    {%- do mapdata | append_dict_key_value("lookup:compose:podman_create_args", {
+          "userns": "keep-id:uid={uid},gid={gid}".format(uid=container_vars.uid, gid=container_vars.gid)}) %}
   {%- endif %}
 {%- endif %}
 

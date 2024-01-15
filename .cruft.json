@@ -28,6 +28,8 @@
             "config": "/mosquitto/config",
             "data": "/mosquitto/data",
             "log": "/mosquitto/log",
+            "uid": 1883,
+            "gid": 1883,
             "default_config": {
               "acl_file": "/mosquitto/config/acl",
               "log_dest": "file /mosquitto/log/mosquitto.log",
@@ -51,6 +53,8 @@
             "config": "/etc/mosquitto",
             "data": "/var/lib/mosquitto",
             "log": "/var/log/mosquitto",
+            "uid": 1000,
+            "gid": 1000,
             "default_config": {
               "log_dest": "file /var/log/mosquitto/mosquitto.log",
               "log_type": [

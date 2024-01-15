@@ -74,8 +74,10 @@ values:
           persistence: true
           persistence_location: /var/lib/mosquitto
           persistent_client_expiration: 30d
+        gid: 1000
         image: docker.io/iegomez/mosquitto-go-auth
         log: /var/log/mosquitto
+        uid: 1000
       mosquitto_official:
         config: /mosquitto/config
         data: /mosquitto/data
@@ -93,8 +95,10 @@ values:
           persistence: true
           persistence_location: /mosquitto/data
           persistent_client_expiration: 30d
+        gid: 1883
         image: docker.io/library/eclipse-mosquitto
         log: /mosquitto/log
+        uid: 1883
   install:
     rootless: true
     autoupdate: true
